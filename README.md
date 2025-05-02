@@ -49,6 +49,19 @@ Used cross-validation and accuracy/F1-score.
 accuracy                           1.00      2725
 
 
+
+## 🧠 Learnings
+
+- BERT is highly effective for binary classification tasks such as spam detection.
+- Using **Stratified K-Fold Cross-Validation** helped ensure that each fold maintained the class balance, leading to more reliable model performance across different data splits.
+- Hugging Face's `Trainer` API simplifies training, evaluation, and integration of transformers models.
+- Tokenizing text inputs with correct padding and truncation is critical to prevent shape mismatches and runtime errors.
+- The evaluation metrics show that the model generalizes very well and has minimal overfitting.
+- Disabling external tools like W&B during development helps reduce unnecessary overhead when experimenting locally.
+- Managing `label` types carefully (e.g., converting to `int64`) is important when working with PyTorch tensors.
+
+
+
 ## 🚀 How to Run
 
 ### 1. Install Dependencies
