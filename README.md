@@ -25,6 +25,10 @@ Each row contains:
 
 ---
 
+<br/>
+<br/>
+
+
 ## 📈 Evaluation
 
 Used cross-validation and accuracy/F1-score.
@@ -38,6 +42,8 @@ Used cross-validation and accuracy/F1-score.
 | eval_f1            | 0.99     |
 
 
+<br/>
+<br/>
 
 ## 📋 Classification Report
 
@@ -49,6 +55,8 @@ Used cross-validation and accuracy/F1-score.
 accuracy                           1.00      2725
 
 
+<br/>
+<br/>
 
 ## 🧠 Learnings
 
@@ -61,7 +69,8 @@ accuracy                           1.00      2725
 - Managing `label` types carefully (e.g., converting to `int64`) is important when working with PyTorch tensors.
 
 
-
+<br/>
+<br/>
 ## 🚀 How to Run
 
 ### 1. Install Dependencies
