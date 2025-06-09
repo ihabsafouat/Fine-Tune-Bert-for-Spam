@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
-import { api } from '../services/api';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { api } from '../services/api';
+import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { useToast } from '../hooks/use-toast';
+import { Send } from 'lucide-react';
 
 export function EmailComposer() {
+    const { token, isAuthenticated } = useAuth();
+    const { toast } = useToast();
     const [recipient, setRecipient] = useState('');
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { token } = useAuth();
-    const { toast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-
-        if (!token?.api_key) {
+        if (!isAuthenticated || !token?.api_key) {
             toast({
-                title: "Authentication Error",
-                description: "You are not authenticated. Please log in.",
-                variant: "destructive",
+                title: 'Authentication Error',
+                description: 'You must be logged in to send emails.',
+                variant: 'destructive',
             });
-            setLoading(false);
             return;
         }
 
+        setIsLoading(true);
         try {
             await api.sendEmail(
                 {
@@ -39,73 +38,71 @@ export function EmailComposer() {
                 token.api_key
             );
             toast({
-                title: "Success!",
-                description: "Email sent successfully!",
+                title: 'Success',
+                description: 'Email sent successfully!',
             });
             setRecipient('');
             setSubject('');
             setContent('');
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to send email';
+        } catch (error) {
             toast({
-                title: "Error sending email",
-                description: errorMessage,
-                variant: "destructive",
+                title: 'Error',
+                description: 'Failed to send email. Please try again.',
+                variant: 'destructive',
             });
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     return (
-        <Card className="w-full">
+        <Card className="w-full max-w-2xl mx-auto">
             <CardHeader>
-                <h2 className="text-xl font-bold text-brand-dark-red">Compose Email</h2>
+                <h2 className="text-2xl font-bold">Compose Email</h2>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
+                        <label htmlFor="recipient" className="block text-sm font-medium mb-1">
+                            To
+                        </label>
                         <Input
-                            type="email"
                             id="recipient"
+                            type="email"
                             value={recipient}
                             onChange={(e) => setRecipient(e.target.value)}
-                            placeholder="To"
-                            className="mt-1 bg-brand-light-bg text-brand-dark-red border-brand-medium-blue focus:border-brand-medium-blue focus:ring-brand-medium-blue"
+                            placeholder="recipient@example.com"
                             required
                         />
                     </div>
-
                     <div>
+                        <label htmlFor="subject" className="block text-sm font-medium mb-1">
+                            Subject
+                        </label>
                         <Input
-                            type="text"
                             id="subject"
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
-                            placeholder="Subject"
-                            className="mt-1 bg-brand-light-bg text-brand-dark-red border-brand-medium-blue focus:border-brand-medium-blue focus:ring-brand-medium-blue"
+                            placeholder="Enter subject"
                             required
                         />
                     </div>
-
                     <div>
+                        <label htmlFor="content" className="block text-sm font-medium mb-1">
+                            Message
+                        </label>
                         <Textarea
                             id="content"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            rows={6}
-                            placeholder="Message"
-                            className="mt-1 bg-brand-light-bg text-brand-dark-red border-brand-medium-blue focus:border-brand-medium-blue focus:ring-brand-medium-blue"
+                            placeholder="Write your message here..."
+                            className="min-h-[200px]"
                             required
                         />
                     </div>
-
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-brand-medium-blue text-brand-light-bg hover:bg-brand-dark-bg focus:ring-2 focus:ring-offset-2 focus:ring-brand-medium-blue transition transform hover:scale-105"
-                    >
-                        {loading ? 'Sending...' : 'Send Email'}
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Sending...' : 'Send Email'}
+                        <Send className="ml-2 h-4 w-4" />
                     </Button>
                 </form>
             </CardContent>

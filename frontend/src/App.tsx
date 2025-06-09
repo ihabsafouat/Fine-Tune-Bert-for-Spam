@@ -5,8 +5,8 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { EmailList } from './components/EmailList';
 import { EmailComposer } from './components/EmailComposer';
-import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/toaster';
+import { Button } from './components/ui/button';
+import { Toaster } from './components/ui/toaster';
 import { LogOut, Inbox, Send, PlusCircle } from 'lucide-react';
 import { Home } from './components/Home';
 

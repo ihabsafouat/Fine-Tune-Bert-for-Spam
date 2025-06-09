@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
+import { Button } from '../components/ui/button';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Home() {
+    const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -12,6 +14,11 @@ export function Home() {
         }, 1500); // Simulate loading for 1.5 seconds
         return () => clearTimeout(timer);
     }, []);
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     if (isLoading) {
         return (
@@ -49,6 +56,11 @@ export function Home() {
                     Register
                 </Button>
             </div>
+            {isAuthenticated && (
+                <Button onClick={handleLogout} variant="outline" className="mt-4">
+                    Logout
+                </Button>
+            )}
         </div>
     );
 } 
