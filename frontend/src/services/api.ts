@@ -1,73 +1,150 @@
+import axios from 'axios';
 import type { Token, Email, EmailCreate, LoginRequest, SignupRequest } from '../types';
 
 const API_URL = 'http://localhost:8000/api/v1';
 
-type Headers = Record<string, string>;
-
-const defaultHeaders: Headers = {
+// Create axios instance
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
     'Content-Type': 'application/json',
-};
+  },
+});
 
-const getHeaders = (apiKey?: string): Headers => {
-    const headers = { ...defaultHeaders };
+// Request interceptor for API calls
+apiClient.interceptors.request.use(
+  (config) => {
+    const apiKey = localStorage.getItem('apiKey');
     if (apiKey) {
-        headers['X-API-Key'] = apiKey;
+      config.headers['X-API-Key'] = apiKey;
     }
-    return headers;
-};
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for API calls
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Handle specific error codes
+    if (error.response) {
+      // Handle 401 Unauthorized
+      if (error.response.status === 401 && !originalRequest._retry) {
+        // Clear local storage and redirect to login
+        localStorage.removeItem('token');
+        localStorage.removeItem('apiKey');
+        window.location.href = '/login';
+        return Promise.reject(new Error('Session expired. Please login again.'));
+      }
+      
+      // Return the error message from the server if available
+      if (error.response.data && error.response.data.detail) {
+        return Promise.reject(new Error(error.response.data.detail));
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 export const api = {
-    async login(data: LoginRequest): Promise<Token> {
-        const response = await fetch(`${API_URL}/login`, {
-            method: 'POST',
-            headers: defaultHeaders,
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Login failed');
-        return response.json();
-    },
+  async login(data: LoginRequest): Promise<Token> {
+    try {
+      const response = await apiClient.post('/login', data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Login failed: ${error.message}`);
+      }
+      throw new Error('Login failed');
+    }
+  },
 
-    async signup(data: SignupRequest): Promise<Token> {
-        const response = await fetch(`${API_URL}/signup`, {
-            method: 'POST',
-            headers: defaultHeaders,
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Signup failed');
-        return response.json();
-    },
+  async signup(data: SignupRequest): Promise<Token> {
+    try {
+      const response = await apiClient.post('/signup', data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Signup failed: ${error.message}`);
+      }
+      throw new Error('Signup failed');
+    }
+  },
 
-    async sendEmail(data: EmailCreate, apiKey: string): Promise<Email> {
-        const response = await fetch(`${API_URL}/send-email`, {
-            method: 'POST',
-            headers: getHeaders(apiKey),
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to send email');
-        return response.json();
-    },
+  async sendEmail(data: EmailCreate): Promise<Email> {
+    try {
+      const response = await apiClient.post('/send-email', data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to send email: ${error.message}`);
+      }
+      throw new Error('Failed to send email');
+    }
+  },
 
-    async getSentEmails(apiKey: string): Promise<Email[]> {
-        const response = await fetch(`${API_URL}/emails/sent`, {
-            headers: getHeaders(apiKey),
-        });
-        if (!response.ok) throw new Error('Failed to fetch sent emails');
-        return response.json();
-    },
+  async getSentEmails(): Promise<Email[]> {
+    try {
+      const response = await apiClient.get('/emails/sent');
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch sent emails: ${error.message}`);
+      }
+      throw new Error('Failed to fetch sent emails');
+    }
+  },
 
-    async getReceivedEmails(apiKey: string): Promise<Email[]> {
-        const response = await fetch(`${API_URL}/emails/received`, {
-            headers: getHeaders(apiKey),
-        });
-        if (!response.ok) throw new Error('Failed to fetch received emails');
-        return response.json();
-    },
+  async getReceivedEmails(): Promise<Email[]> {
+    try {
+      const response = await apiClient.get('/emails/received');
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch received emails: ${error.message}`);
+      }
+      throw new Error('Failed to fetch received emails');
+    }
+  },
 
-    async getSpamEmails(apiKey: string): Promise<Email[]> {
-        const response = await fetch(`${API_URL}/emails/spam`, {
-            headers: getHeaders(apiKey),
-        });
-        if (!response.ok) throw new Error('Failed to fetch spam emails');
-        return response.json();
-    },
-}; 
+  async getSpamEmails(): Promise<Email[]> {
+    try {
+      const response = await apiClient.get('/emails/spam');
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch spam emails: ${error.message}`);
+      }
+      throw new Error('Failed to fetch spam emails');
+    }
+  },
+
+  // New methods
+  async markAsSpam(emailId: number): Promise<void> {
+    try {
+      await apiClient.post(`/emails/${emailId}/mark-spam`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to mark email as spam: ${error.message}`);
+      }
+      throw new Error('Failed to mark email as spam');
+    }
+  },
+
+  async markAsNotSpam(emailId: number): Promise<void> {
+    try {
+      await apiClient.post(`/emails/${emailId}/mark-not-spam`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to mark email as not spam: ${error.message}`);
+      }
+      throw new Error('Failed to mark email as not spam');
+    }
+  },
+};
