@@ -1,0 +1,113 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+spam_filter.log
+
+# Documentation
+docs/
+*.md
+!README.md
+LICENSE
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Project specific
+*.csv
+*.json
+!config.json
+*.pkl
+*.h5
+*.model
+*.joblib
+*.bin
+*.dat
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Large data directories
+data/
+models/
+datasets/
+raw_data/
+processed_data/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Add any specific large files or directories you don't need in the image
+# e.g., data/
+# e.g., large_model_files/ 
