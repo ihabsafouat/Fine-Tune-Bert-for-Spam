@@ -61,8 +61,56 @@ export function Home() {
                 {/* Hero Section */}
                 <main className="flex flex-col items-center justify-center text-center px-4 py-20">
                     <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-4xl bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500 mb-16">
-                        Gagnez 4 heures par personne chaque semaine
+                        Protégez votre boîte mail contre le spam
                     </h2>
+
+                    {/* Features Section */}
+                    <section className="py-20 text-center max-w-4xl mx-auto">
+                        <h3 className="text-4xl font-extrabold leading-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500">
+                            Une protection intelligente contre le spam
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-8">
+                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Détection Avancée</h4>
+                                <p className="text-gray-300">Utilisation de l'intelligence artificielle pour identifier les emails suspects avec une précision exceptionnelle.</p>
+                            </div>
+                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Analyse en Temps Réel</h4>
+                                <p className="text-gray-300">Vérification instantanée des emails entrants pour une protection immédiate.</p>
+                            </div>
+                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Sécurité Maximale</h4>
+                                <p className="text-gray-300">Protection contre les menaces de phishing et les attaques malveillantes.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Stats Section */}
+                    <section className="py-20 text-center">
+                        <h3 className="text-6xl md:text-8xl font-extrabold text-gray-800 tracking-tighter relative">
+                            99.9%
+                            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl md:text-4xl text-white font-semibold whitespace-nowrap">
+                                Taux de détection précis <br />
+                                <span className="text-yellow-400">des emails malveillants</span>
+                            </span>
+                        </h3>
+                    </section>
+
+                    {/* How It Works Section */}
+                    <section className="py-20 text-center max-w-2xl mx-auto">
+                        <h3 className="text-4xl font-extrabold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500">
+                            Comment ça fonctionne
+                        </h3>
+                        <p className="text-gray-300 mb-4">
+                            Notre système utilise des algorithmes d'apprentissage automatique avancés pour analyser chaque email entrant.
+                        </p>
+                        <p className="text-gray-300 mb-8">
+                            Nous vérifions le contenu, les liens, les pièces jointes et les en-têtes pour identifier les menaces potentielles.
+                        </p>
+                        <p className="text-gray-300 italic">
+                            La sécurité de vos communications est notre priorité absolue.
+                        </p>
+                    </section>
 
                     {/* 15 Million Hours Section */}
                     <section className="py-20 text-center">
