@@ -69,17 +69,17 @@ export function Home() {
                             Libérez votre boîte de réception du spam pour de bon
                         </h3>
                         <div className="grid md:grid-cols-3 gap-8">
-                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Détection Avancée par IA</h4>
-                                <p className="text-gray-300">Notre moteur d'intelligence artificielle analyse en profondeur chaque email, identifiant les menaces complexes avec une précision inégalée.</p>
+                            <div className="p-6 rounded-xl bg-zinc-900/60 border border-zinc-500/30 hover:border-purple-400 transition-all duration-300 shadow-[0_0_8px_rgba(150,150,150,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.7)] transform hover:scale-105">
+                                <h4 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-400 mb-4">Détection Avancée par IA</h4>
+                                <p className="text-gray-100 leading-relaxed">Notre moteur d'intelligence artificielle analyse en profondeur chaque email, identifiant les menaces complexes avec une précision inégalée.</p>
                             </div>
-                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Protection Instantanée</h4>
-                                <p className="text-gray-300">Bénéficiez d'une analyse et d'un filtrage en temps réel, bloquant le spam et les menaces avant qu'ils n'atteignent votre boîte de réception.</p>
+                            <div className="p-6 rounded-xl bg-zinc-900/60 border border-zinc-500/30 hover:border-purple-400 transition-all duration-300 shadow-[0_0_8px_rgba(150,150,150,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.7)] transform hover:scale-105">
+                                <h4 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-400 mb-4">Protection Instantanée</h4>
+                                <p className="text-gray-100 leading-relaxed">Bénéficiez d'une analyse et d'un filtrage en temps réel, bloquant le spam et les menaces avant qu'ils n'atteignent votre boîte de réception.</p>
                             </div>
-                            <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Défense Multi-Couches</h4>
-                                <p className="text-gray-300">Notre système offre une sécurité robuste contre le phishing, les malwares et autres cyberattaques, protégeant vos données sensibles.</p>
+                            <div className="p-6 rounded-xl bg-zinc-900/60 border border-zinc-500/30 hover:border-purple-400 transition-all duration-300 shadow-[0_0_8px_rgba(150,150,150,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.7)] transform hover:scale-105">
+                                <h4 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-400 mb-4">Défense Multi-Couches</h4>
+                                <p className="text-gray-100 leading-relaxed">Notre système offre une sécurité robuste contre le phishing, les malwares et autres cyberattaques, protégeant vos données sensibles.</p>
                             </div>
                         </div>
                     </section>
