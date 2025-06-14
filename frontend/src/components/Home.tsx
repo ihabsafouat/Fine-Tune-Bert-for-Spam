@@ -59,28 +59,27 @@ export function Home() {
                 </header>
 
                 {/* Hero Section */}
-                <main className="flex flex-col items-center justify-center text-center px-4 py-20">
+                <main className="flex flex-col items-center justify-center text-center py-20">
                     <h2 className="text-5xl md:text-7xl font-extrabold leading-tight max-w-4xl bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500 mb-16">
                         Protégez votre boîte mail contre le spam
                     </h2>
-
                     {/* Features Section */}
                     <section className="py-20 text-center max-w-4xl mx-auto">
                         <h3 className="text-4xl font-extrabold leading-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500">
-                            Une protection intelligente contre le spam
+                            Libérez votre boîte de réception du spam pour de bon
                         </h3>
                         <div className="grid md:grid-cols-3 gap-8">
                             <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Détection Avancée</h4>
-                                <p className="text-gray-300">Utilisation de l'intelligence artificielle pour identifier les emails suspects avec une précision exceptionnelle.</p>
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Détection Avancée par IA</h4>
+                                <p className="text-gray-300">Notre moteur d'intelligence artificielle analyse en profondeur chaque email, identifiant les menaces complexes avec une précision inégalée.</p>
                             </div>
                             <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Analyse en Temps Réel</h4>
-                                <p className="text-gray-300">Vérification instantanée des emails entrants pour une protection immédiate.</p>
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Protection Instantanée</h4>
+                                <p className="text-gray-300">Bénéficiez d'une analyse et d'un filtrage en temps réel, bloquant le spam et les menaces avant qu'ils n'atteignent votre boîte de réception.</p>
                             </div>
                             <div className="p-6 rounded-xl bg-gray-900/50 border border-purple-500/30 hover:border-purple-500 transition-all duration-300">
-                                <h4 className="text-xl font-bold text-purple-400 mb-4">Sécurité Maximale</h4>
-                                <p className="text-gray-300">Protection contre les menaces de phishing et les attaques malveillantes.</p>
+                                <h4 className="text-xl font-bold text-purple-400 mb-4">Défense Multi-Couches</h4>
+                                <p className="text-gray-300">Notre système offre une sécurité robuste contre le phishing, les malwares et autres cyberattaques, protégeant vos données sensibles.</p>
                             </div>
                         </div>
                     </section>
@@ -142,31 +141,28 @@ export function Home() {
                     </section>
 
                     {/* Scrolling Tags Section */}
-                    <section className="w-full overflow-hidden relative">
+                    <section className="w-full relative">
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-purple-900/20" />
                         <div className="relative flex overflow-hidden">
-                            <div className="flex animate-marquee whitespace-nowrap">
+                            <div className="flex animate-marquee whitespace-nowrap mr-8">
                                 {[
-                                    'Recrutement',
-                                    'Sécurité',
-                                    'Stratégie',
-                                    'Produit',
-                                    'Personnel',
-                                    'Design',
-                                    'Ventes',
-                                    'Finance',
-                                    'Service Client',
-                                    'Ingénierie',
-                                    'Développement Commercial',
-                                    'Analyse',
-                                    'Opérations',
-                                    'Marketing',
-                                    'Direction',
-                                    'Événements'
+                                    'Spam',
+                                    'Phishing',
+                                    'Malware',
+                                    'Sécurité Email',
+                                    'Protection',
+                                    'Filtrage',
+                                    'Intelligence Artificielle',
+                                    'Cybersecurité',
+                                    'Anti-spam',
+                                    'Détection',
+                                    'Prévention',
+                                    'Analyse Menaces',
+                                    'Nettoyage Boîte Mail'
                                 ].map((text) => (
                                     <span 
                                         key={text} 
-                                        className="inline-block px-8 py-4 mx-4 rounded-full border-2 border-purple-500/30 bg-gray-900/50 text-gray-200 text-lg font-medium 
+                                        className="inline-block px-8 py-4 mx-2 rounded-full border-2 border-purple-500/30 bg-gray-900/50 text-gray-200 text-lg font-medium 
                                         transition-all duration-300 
                                         hover:bg-purple-500/20 hover:border-purple-500 hover:text-white hover:scale-110 
                                         hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]
@@ -178,28 +174,25 @@ export function Home() {
                                     </span>
                                 ))}
                             </div>
-                            <div className="flex animate-marquee whitespace-nowrap">
+                            <div className="flex animate-marquee whitespace-nowrap mr-8">
                                 {[
-                                    'Recrutement',
-                                    'Sécurité',
-                                    'Stratégie',
-                                    'Produit',
-                                    'Personnel',
-                                    'Design',
-                                    'Ventes',
-                                    'Finance',
-                                    'Service Client',
-                                    'Ingénierie',
-                                    'Développement Commercial',
-                                    'Analyse',
-                                    'Opérations',
-                                    'Marketing',
-                                    'Direction',
-                                    'Événements'
+                                    'Spam',
+                                    'Phishing',
+                                    'Malware',
+                                    'Sécurité Email',
+                                    'Protection',
+                                    'Filtrage',
+                                    'Intelligence Artificielle',
+                                    'Cybersecurité',
+                                    'Anti-spam',
+                                    'Détection',
+                                    'Prévention',
+                                    'Analyse Menaces',
+                                    'Nettoyage Boîte Mail'
                                 ].map((text) => (
                                     <span 
                                         key={text} 
-                                        className="inline-block px-8 py-4 mx-4 rounded-full border-2 border-purple-500/30 bg-gray-900/50 text-gray-200 text-lg font-medium 
+                                        className="inline-block px-8 py-4 mx-2 rounded-full border-2 border-purple-500/30 bg-gray-900/50 text-gray-200 text-lg font-medium 
                                         transition-all duration-300 
                                         hover:bg-purple-500/20 hover:border-purple-500 hover:text-white hover:scale-110 
                                         hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]
