@@ -42,4 +42,4 @@ RUN echo "define(\`SMART_HOST', \`smtp.gmail.com')dnl" >> /etc/mail/sendmail.mc 
 EXPOSE 8000
 
 # Start sendmail and your app
-CMD service sendmail start && uvicorn app:app --host 0.0.0.0 --port 8000 
+CMD service sendmail start && uvicorn backend.app:app --host 0.0.0.0 --port 8000 
