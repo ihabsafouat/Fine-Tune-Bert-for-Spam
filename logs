@@ -1,0 +1,39 @@
+2025-05-26 10:22:51,111 - sendmail_integration - ERROR - Error handling spam: 'EmailRequest' object is not subscriptable
+2025-05-26 10:31:03,275 - sendmail_integration - INFO - Action: SPAM_REJECTED - From: spammer@example.com - To: user@example.com
+2025-05-26 10:46:18,956 - sendmail_integration - ERROR - Error handling legitimate email: Command 'sendmail -t < /tmp/email_20250526_104618.eml' returned non-zero exit status 1.
+2025-05-26 10:48:12,605 - sendmail_integration - ERROR - Error handling legitimate email: Command 'sendmail -t < /tmp/email_20250526_104812.eml' returned non-zero exit status 1.
+2025-05-26 11:31:56,125 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-26 13:05:33,534 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-26 17:27:50,734 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-26 17:40:50,834 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-26 17:41:22,356 - sendmail_integration - INFO - Action: SPAM_REJECTED - From: text@gmail.com - To: user@example.com
+2025-05-28 12:04:51,854 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-05-28 13:06:07,300 - sendmail_integration - ERROR - Error handling legitimate email: Command 'sendmail -t < /tmp/email_20250528_130607.eml' returned non-zero exit status 1.
+2025-06-07 23:19:40,729 - sendmail_integration - ERROR - Error handling legitimate email: [WinError 2] The system cannot find the file specified
+2025-06-07 23:21:56,961 - sendmail_integration - ERROR - Error handling legitimate email: [WinError 2] The system cannot find the file specified
+2025-06-07 23:28:36,180 - sendmail_integration - ERROR - Error handling legitimate email: [WinError 2] The system cannot find the file specified
+2025-06-08 16:24:52,669 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Ihab\AppData\Local\Programs\Python\Python38\lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'

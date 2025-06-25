@@ -6,7 +6,7 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { Dashboard } from './components/Dashboard';
 import { Toaster } from './components/ui/toaster';
-import { Home } from './components/Home';
+import Home from './components/Home';
 import NeonBackground from './components/NeonBackground';
 import ErrorBoundary from './components/ErrorBoundary';
 

@@ -1,12 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import SplineBackground from './SplineBackground';
+
+// Types
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
+interface MagneticButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}
+
+interface AnimatedCounterProps {
+  target: number | string;
+  suffix?: string;
+  prefix?: string;
+}
 
 // Custom hook for mouse tracking
-const useMousePosition = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const useMousePosition = (): MousePosition => {
+  const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 });
 
   useEffect(() => {
-    const updateMousePosition = (e) => {
+    const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener('mousemove', updateMousePosition);
@@ -16,82 +35,12 @@ const useMousePosition = () => {
   return mousePosition;
 };
 
-// CSS-based particle system
-const ParticleBackground = () => {
-  const mousePosition = useMousePosition();
-  const [particles, setParticles] = useState([]);
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 4 + 1,
-      animationDuration: Math.random() * 20 + 10,
-      delay: Math.random() * 5,
-    }));
-    setParticles(newParticles);
-  }, []);
-
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className="absolute rounded-full bg-purple-500/30 animate-pulse"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            animation: `float ${particle.animationDuration}s ease-in-out infinite`,
-            animationDelay: `${particle.delay}s`,
-            transform: `translate(${(mousePosition.x - window.innerWidth / 2) * 0.01}px, ${(mousePosition.y - window.innerHeight / 2) * 0.01}px)`,
-            transition: 'transform 0.1s ease-out',
-            filter: 'blur(1px)',
-          }}
-        />
-      ))}
-      
-      {/* Animated gradient mesh */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/20 via-transparent to-pink-600/20 animate-pulse" />
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-blue-600/20 via-transparent to-transparent animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-pink-600/20 via-transparent to-transparent animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
-    </div>
-  );
-};
-
-// Floating orbs component
-const FloatingOrbs = () => {
-  return (
-    <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-      {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className={`absolute w-64 h-64 rounded-full opacity-10 animate-float-${i % 3 + 1}`}
-          style={{
-            background: `radial-gradient(circle, ${
-              ['#8b5cf6', '#ec4899', '#06b6d4'][i % 3]
-            }, transparent)`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${i * 2}s`,
-            filter: 'blur(40px)'
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
 // Magnetic button component
-const MagneticButton = ({ children, onClick, className }) => {
-  const buttonRef = useRef(null);
+const MagneticButton: React.FC<MagneticButtonProps> = ({ children, onClick, className }) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!buttonRef.current) return;
     const rect = buttonRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
@@ -123,14 +72,14 @@ const MagneticButton = ({ children, onClick, className }) => {
 };
 
 // Animated counter
-const AnimatedCounter = ({ target, suffix = '', prefix = '' }) => {
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, suffix = '', prefix = '' }) => {
   const [count, setCount] = useState(0);
-  const elementRef = useRef(null);
+  const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && elementRef.current) {
           let start = 0;
           const end = typeof target === 'string' ? parseFloat(target) : target;
           const duration = 2000;
@@ -167,7 +116,7 @@ const AnimatedCounter = ({ target, suffix = '', prefix = '' }) => {
 };
 
 export default function Home() {
-  const [isVisible, setIsVisible] = useState({});
+  const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const mousePosition = useMousePosition();
 
   // Intersection observer for animations
@@ -203,13 +152,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-hidden bg-black">
-      {/* Enhanced Background Effects */}
-      <ParticleBackground />
-      <FloatingOrbs />
+      {/* Spline 3D Background */}
+      <SplineBackground />
       <CursorFollower />
       
-      {/* Gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-black/50 to-pink-900/20 -z-5" />
+      {/* Gradient overlay for better text readability */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/10 via-black/30 to-pink-900/10 -z-5" />
 
       {/* Content Container */}
       <div className="relative z-10">
@@ -230,11 +178,13 @@ export default function Home() {
           
           <div className="flex items-center space-x-4">
             <MagneticButton
+              onClick={() => {}}
               className="bg-transparent border border-purple-500/50 text-white font-bold py-2 px-6 rounded-lg backdrop-blur-sm hover:bg-purple-500/10 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]"
             >
               Connexion
             </MagneticButton>
             <MagneticButton
+              onClick={() => {}}
               className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-lg shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]"
             >
               Inscription
@@ -468,6 +418,7 @@ export default function Home() {
                 Prêt à transformer votre expérience email ?
               </h3>
               <MagneticButton
+                onClick={() => {}}
                 className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 hover:from-purple-700 hover:via-pink-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-xl text-xl shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.8)] animate-pulse"
               >
                 Commencer maintenant
@@ -477,7 +428,7 @@ export default function Home() {
         </main>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes marquee {
           0% { transform: translate3d(0, 0, 0); }
           100% { transform: translate3d(-50%, 0, 0); }
