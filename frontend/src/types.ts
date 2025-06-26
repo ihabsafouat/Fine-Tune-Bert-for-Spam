@@ -7,6 +7,7 @@ interface Token {
     access_token: string;
     token_type: string;
     api_key: string;
+    email?: string;
 }
 
 interface Email {

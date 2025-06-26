@@ -87,6 +87,13 @@ class EmailRead(BaseModel):
     class Config:
         orm_mode = True
 
+class UserUpdateEmail(BaseModel):
+    email: str
+
+class UserUpdatePassword(BaseModel):
+    new_password: str
+    confirm_password: str
+
 # Initialize components
 model = load_model()
 sendmail_handler = EmailHandler()
@@ -327,6 +334,49 @@ async def get_spam_emails(
 @app.get("/api/v1/health")
 async def health_check():
     return {"status": "healthy", "service": "anti-spam-api"}
+
+@app.patch("/api/v1/user/email")
+async def update_email(
+    data: UserUpdateEmail,
+    api_key: str = Depends(verify_api_key),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if db.query(User).filter(User.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Email already in use")
+    user.email = data.email
+    db.commit()
+    db.refresh(user)
+    return {"message": "Email updated successfully", "email": user.email}
+
+@app.patch("/api/v1/user/password")
+async def update_password(
+    data: UserUpdatePassword,
+    api_key: str = Depends(verify_api_key),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if data.new_password != data.confirm_password:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+    user.hashed_password = pwd_context.hash(data.new_password)
+    db.commit()
+    return {"message": "Password updated successfully"}
+
+@app.get("/api/v1/user/me")
+async def get_current_user(api_key: str = Depends(verify_api_key), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "email": user.email,
+        "api_key": user.api_key,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at,
+    }
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True) 

@@ -147,4 +147,19 @@ export const api = {
       throw new Error('Failed to mark email as not spam');
     }
   },
+
+  async updateUserEmail(email: string): Promise<{ message: string; email: string }> {
+    const response = await apiClient.patch('/user/email', { email });
+    return response.data;
+  },
+
+  async updateUserPassword(new_password: string, confirm_password: string): Promise<{ message: string }> {
+    const response = await apiClient.patch('/user/password', { new_password, confirm_password });
+    return response.data;
+  },
+
+  async getCurrentUser(): Promise<{ email: string; api_key: string; created_at?: string; updated_at?: string }> {
+    const response = await apiClient.get('/user/me');
+    return response.data;
+  },
 };
