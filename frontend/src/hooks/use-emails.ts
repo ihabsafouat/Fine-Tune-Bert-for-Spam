@@ -12,70 +12,17 @@ export function useEmails() {
   const fetchEmails = useCallback(async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
-    
     try {
-      let emails: Email[] = [];
-      
-      switch (state.activeTab) {
-        case 'inbox':
-          emails = await api.getReceivedEmails();
-          break;
-        case 'sent':
-          emails = await api.getSentEmails();
-          break;
-        case 'spam':
-          emails = await api.getSpamEmails();
-          break;
-        case 'important':
-          // This would require a backend endpoint for important emails
-          // For now, we'll just filter received emails that have a specific subject
-          const received = await api.getReceivedEmails();
-          emails = received.filter(email => 
-            email.subject.toLowerCase().includes('important') ||
-            email.subject.includes('!')
-          );
-          break;
-      }
-      
-      // Apply search filter if there's a search query
-      if (state.searchQuery) {
-        const query = state.searchQuery.toLowerCase();
-        emails = emails.filter(email => 
-          email.subject.toLowerCase().includes(query) ||
-          email.content.toLowerCase().includes(query) ||
-          email.sender_email.toLowerCase().includes(query) ||
-          email.recipient_email.toLowerCase().includes(query)
-        );
-      }
-      
-      // Apply date filters if set
-      if (state.filters.dateRange.start || state.filters.dateRange.end) {
-        emails = emails.filter(email => {
-          const emailDate = new Date(email.created_at);
-          const startDate = state.filters.dateRange.start;
-          const endDate = state.filters.dateRange.end;
-          
-          if (startDate && endDate) {
-            return emailDate >= startDate && emailDate <= endDate;
-          } else if (startDate) {
-            return emailDate >= startDate;
-          } else if (endDate) {
-            return emailDate <= endDate;
-          }
-          return true;
-        });
-      }
-      
-      // Sort emails by date (newest first)
-      emails.sort((a, b) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-      
-      dispatch({ type: 'SET_EMAILS', payload: emails });
+      const [sent, received, spam] = await Promise.all([
+        api.getSentEmails(),
+        api.getReceivedEmails(),
+        api.getSpamEmails(),
+      ]);
+      dispatch({ type: 'SET_EMAILS', payload: { sent, received, spam } });
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to fetch emails' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to fetch emails',
       });
       toast({
         title: 'Error',
@@ -86,7 +33,7 @@ export function useEmails() {
       dispatch({ type: 'SET_LOADING', payload: false });
       setIsRefreshing(false);
     }
-  }, [state.activeTab, state.searchQuery, state.filters, dispatch, toast]);
+  }, [dispatch, toast]);
 
   // Initial fetch and when dependencies change
   useEffect(() => {
@@ -132,8 +79,62 @@ export function useEmails() {
     }
   };
 
+  // When returning, filter based on state.activeTab
+  let emails: Email[] = [];
+  switch (state.activeTab) {
+    case 'inbox':
+      emails = state.receivedEmails;
+      break;
+    case 'sent':
+      emails = state.sentEmails;
+      break;
+    case 'spam':
+      emails = state.spamEmails;
+      break;
+    case 'important':
+      emails = state.receivedEmails.filter(email =>
+        email.subject.toLowerCase().includes('important') ||
+        email.subject.includes('!')
+      );
+      break;
+  }
+
+  // Apply search filter if there's a search query
+  if (state.searchQuery) {
+    const query = state.searchQuery.toLowerCase();
+    emails = emails.filter(email => 
+      email.subject.toLowerCase().includes(query) ||
+      email.content.toLowerCase().includes(query) ||
+      email.sender_email.toLowerCase().includes(query) ||
+      email.recipient_email.toLowerCase().includes(query)
+    );
+  }
+  
+  // Apply date filters if set
+  if (state.filters.dateRange.start || state.filters.dateRange.end) {
+    emails = emails.filter(email => {
+      const emailDate = new Date(email.created_at);
+      const startDate = state.filters.dateRange.start;
+      const endDate = state.filters.dateRange.end;
+      
+      if (startDate && endDate) {
+        return emailDate >= startDate && emailDate <= endDate;
+      } else if (startDate) {
+        return emailDate >= startDate;
+      } else if (endDate) {
+        return emailDate <= endDate;
+      }
+      return true;
+    });
+  }
+  
+  // Sort emails by date (newest first)
+  emails.sort((a, b) => 
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
   return {
-    emails: state.emails,
+    emails,
     isLoading: state.isLoading,
     error: state.error,
     isRefreshing,

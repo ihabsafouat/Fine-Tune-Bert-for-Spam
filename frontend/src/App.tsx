@@ -9,6 +9,8 @@ import { Toaster } from './components/ui/toaster';
 import Home from './components/Home';
 import NeonBackground from './components/NeonBackground';
 import ErrorBoundary from './components/ErrorBoundary';
+import { Profile } from './components/Profile';
+import { Settings } from './components/Settings';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -41,6 +43,8 @@ export default function App() {
                     </PrivateRoute>
                   }
                 />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/" element={<Home />} />
               </Routes>
               <Toaster />

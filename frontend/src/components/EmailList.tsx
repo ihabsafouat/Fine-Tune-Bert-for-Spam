@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
@@ -6,42 +6,13 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { useToast } from '../hooks/use-toast';
 import { EmailView } from './EmailView';
 import type { Email } from '../types';
+import { useEmails } from '../hooks/use-emails';
 
 export function EmailList() {
   const { token } = useAuth();
   const { toast } = useToast();
-  const [emails, setEmails] = useState<Email[]>([]);
+  const { emails, isLoading, error } = useEmails();
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchEmails = async () => {
-      if (!token?.api_key) return;
-
-      try {
-        // Fetch both received and sent emails
-        const [receivedEmails, sentEmails] = await Promise.all([
-          api.getReceivedEmails(token.api_key),
-          api.getSentEmails(token.api_key),
-        ]);
-        setEmails([...receivedEmails, ...sentEmails].sort((a, b) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        ));
-      } catch (error) {
-        setError('Failed to fetch emails. Please try again later.');
-        toast({
-          title: 'Error',
-          description: 'Failed to fetch emails. Please try again.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEmails();
-  }, [token, toast]);
 
   if (isLoading) {
     return (
@@ -86,7 +57,7 @@ export function EmailList() {
       <div className="grid gap-4">
         {emails.map((email) => (
           <Card
-            key={email.id}
+            key={`${email.id}-${email.sender_email}-${email.recipient_email}`}
             className="cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={() => setSelectedEmail(email)}
           >

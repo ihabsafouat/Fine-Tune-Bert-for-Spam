@@ -3,7 +3,9 @@ import type { Email } from '../types';
 
 // Define app state types
 type AppState = {
-  emails: Email[];
+  sentEmails: Email[];
+  receivedEmails: Email[];
+  spamEmails: Email[];
   selectedEmail: Email | null;
   isLoading: boolean;
   error: string | null;
@@ -17,7 +19,7 @@ type AppState = {
 
 // Define action types
 type AppAction =
-  | { type: 'SET_EMAILS'; payload: Email[] }
+  | { type: 'SET_EMAILS'; payload: { sent: Email[]; received: Email[]; spam: Email[] } }
   | { type: 'SELECT_EMAIL'; payload: Email | null }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
@@ -27,7 +29,9 @@ type AppAction =
 
 // Initial state
 const initialState: AppState = {
-  emails: [],
+  sentEmails: [],
+  receivedEmails: [],
+  spamEmails: [],
   selectedEmail: null,
   isLoading: false,
   error: null,
@@ -49,7 +53,12 @@ const AppContext = createContext<{
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_EMAILS':
-      return { ...state, emails: action.payload };
+      return {
+        ...state,
+        sentEmails: action.payload.sent,
+        receivedEmails: action.payload.received,
+        spamEmails: action.payload.spam,
+      };
     case 'SELECT_EMAIL':
       return { ...state, selectedEmail: action.payload };
     case 'SET_LOADING':

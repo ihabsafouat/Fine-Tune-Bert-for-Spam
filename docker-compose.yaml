@@ -12,7 +12,6 @@ services:
       - ./logs:/var/log/spam-filter
     restart: unless-stopped
     depends_on:
-      - db
       db:
         condition: service_healthy
     healthcheck:

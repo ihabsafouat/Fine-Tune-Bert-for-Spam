@@ -24,6 +24,10 @@ export function Login() {
         try {
             const token = await api.login({ email, password });
             setToken(token);
+            // Save API key to localStorage
+            if (token.api_key) {
+                localStorage.setItem('apiKey', token.api_key);
+            }
             toast({
                 title: 'Success',
                 description: 'Login successful!',

@@ -28,12 +28,16 @@ export function Register() {
         }
 
         try {
-            await api.signup({ email, password });
+            const response = await api.signup({ email, password });
+            // Save API key to localStorage
+            if (response.api_key) {
+                localStorage.setItem('apiKey', response.api_key);
+            }
             toast({
                 title: 'Success',
                 description: 'Registration successful! Please log in.',
             });
-            navigate('/login');
+            navigate('/app');
         } catch (error) {
             toast({
                 title: 'Error',
