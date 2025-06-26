@@ -6,16 +6,16 @@ import uvicorn
 from typing import Optional, List
 import os
 from dotenv import load_dotenv
-from ml.model_loader import load_model, predict_spam
-from services.email_processor import process_email
-from services.sendmail_integration import EmailHandler
+from backend.ml.model_loader import load_model, predict_spam
+from backend.services.email_processor import process_email
+from backend.services.sendmail_integration import EmailHandler
 from datetime import datetime, timedelta
 import jwt
 from passlib.context import CryptContext
 import secrets
 from sqlalchemy.orm import Session
-from database.database import SessionLocal, engine, get_db # Import necessary database components
-from models.models import User, Email # Import the User and Email models
+from backend.database.database import SessionLocal, engine, get_db # Import necessary database components
+from backend.models.models import User, Email # Import the User and Email models
 
 # Load environment variables
 load_dotenv()
@@ -30,10 +30,11 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Explicitly allow frontend origin
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Allow both localhost variations
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*", "X-API-Key"],  # Explicitly allow X-API-Key header
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=["*"]  # Expose all headers
 )
 
 # Security

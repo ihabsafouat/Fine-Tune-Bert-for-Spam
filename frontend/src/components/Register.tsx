@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { useToast } from '../hooks/use-toast';
+import { api } from '../services/api';
 
 export function Register() {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ export function Register() {
         }
 
         try {
-            // Here you would typically make an API call to register the user
+            await api.signup({ email, password });
             toast({
                 title: 'Success',
                 description: 'Registration successful! Please log in.',
@@ -36,7 +37,7 @@ export function Register() {
         } catch (error) {
             toast({
                 title: 'Error',
-                description: 'Registration failed. Please try again.',
+                description: error instanceof Error ? error.message : 'Registration failed. Please try again.',
                 variant: 'destructive',
             });
         } finally {

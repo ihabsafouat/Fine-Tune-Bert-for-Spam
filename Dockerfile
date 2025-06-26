@@ -1,15 +1,19 @@
 # syntax=docker/dockerfile:1.4
 
-FROM python:3.8-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 # Install system dependencies and clean up
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         sendmail sendmail-cf libsasl2-modules \
         build-essential libpq-dev \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+# Increase pip timeout for large packages
+ENV PIP_DEFAULT_TIMEOUT=300
 
 # Install Python dependencies
 COPY requirements.txt .
