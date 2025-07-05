@@ -6,6 +6,8 @@ import { Card, CardHeader, CardContent } from '../components/ui/card';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { useToast } from '../hooks/use-toast';
 import { api } from '../services/api';
+import { Spinner } from './ui/loading';
+import { PasswordStrengthMeter } from './ui/PasswordStrengthMeter';
 
 export function Register() {
     const navigate = useNavigate();
@@ -40,9 +42,9 @@ export function Register() {
             navigate('/app');
         } catch (error) {
             toast({
-                title: 'Error',
-                description: error instanceof Error ? error.message : 'Registration failed. Please try again.',
-                variant: 'destructive',
+                title: 'Registration failed',
+                description: error.response?.data?.detail || 'An error occurred during registration',
+                variant: 'error',
             });
         } finally {
             setIsLoading(false);
@@ -81,6 +83,7 @@ export function Register() {
                             placeholder="Enter your password"
                             required
                         />
+                        <PasswordStrengthMeter password={password} />
                     </div>
                     <div>
                         <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
@@ -101,7 +104,14 @@ export function Register() {
                         </Alert>
                     )}
                     <Button type="submit" disabled={isLoading} className="w-full">
-                        {isLoading ? 'Registering...' : 'Register'}
+                        {isLoading ? (
+                            <div className="flex items-center space-x-2">
+                                <Spinner size="sm" />
+                                <span>Registering...</span>
+                            </div>
+                        ) : (
+                            'Register'
+                        )}
                     </Button>
                 </form>
             </CardContent>

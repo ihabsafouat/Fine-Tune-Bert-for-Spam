@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import SplineBackground from './SplineBackground';
-
 // Types
 interface MousePosition {
   x: number;
@@ -37,7 +35,7 @@ const useMousePosition = (): MousePosition => {
 };
 
 // Magnetic button component
-const MagneticButton: React.FC<MagneticButtonProps> = ({ children, onClick, className }) => {
+const MagneticButton: React.FC<MagneticButtonProps> = React.memo(({ children, onClick, className }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -70,12 +68,13 @@ const MagneticButton: React.FC<MagneticButtonProps> = ({ children, onClick, clas
       <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
     </Button>
   );
-};
+});
 
 // Animated counter
-const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, suffix = '', prefix = '' }) => {
+const AnimatedCounter: React.FC<AnimatedCounterProps> = React.memo(({ target, suffix = '', prefix = '' }) => {
   const [count, setCount] = useState(0);
   const elementRef = useRef<HTMLSpanElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,18 +83,19 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, suffix = '', 
           let start = 0;
           const end = typeof target === 'string' ? parseFloat(target) : target;
           const duration = 2000;
-          const increment = end / (duration / 16);
+          const startTime = performance.now();
 
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(start));
+          const animate = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const value = start + (end - start) * progress;
+            setCount(progress === 1 ? end : Math.floor(value));
+            if (progress < 1) {
+              rafRef.current = requestAnimationFrame(animate);
             }
-          }, 16);
+          };
 
+          rafRef.current = requestAnimationFrame(animate);
           observer.unobserve(elementRef.current);
         }
       },
@@ -106,15 +106,18 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ target, suffix = '', 
       observer.observe(elementRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [target]);
 
   return (
-    <span ref={elementRef}>
+    <span ref={elementRef} style={{ minWidth: '3.5ch', minHeight: '1em', display: 'inline-block' }}>
       {prefix}{typeof target === 'string' && target.includes('.') ? count.toFixed(1) : count}{suffix}
     </span>
   );
-};
+});
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
@@ -141,21 +144,32 @@ export default function Home() {
   }, []);
 
   // Cursor follower
-  const CursorFollower = () => (
-    <div
-      className="fixed w-6 h-6 bg-purple-500/30 rounded-full pointer-events-none z-50 mix-blend-difference transition-transform duration-100 ease-out"
-      style={{
-        left: mousePosition.x - 12,
-        top: mousePosition.y - 12,
-        transform: 'scale(1)',
-      }}
-    />
-  );
+  const CursorFollower = () => {
+    // Only render on desktop
+    const [isDesktop, setIsDesktop] = useState(true);
+    useEffect(() => {
+      const checkDesktop = () => setIsDesktop(window.innerWidth > 768);
+      checkDesktop();
+      window.addEventListener('resize', checkDesktop);
+      return () => window.removeEventListener('resize', checkDesktop);
+    }, []);
+    if (!isDesktop) return null;
+    return (
+      <div
+        className="fixed w-6 h-6 bg-purple-500/30 rounded-full pointer-events-none z-50 mix-blend-difference transition-transform duration-100 ease-out"
+        style={{
+          left: mousePosition.x - 12,
+          top: mousePosition.y - 12,
+          transform: 'scale(1)',
+        }}
+      />
+    );
+  };
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-hidden bg-black">
       {/* Spline 3D Background */}
-      <SplineBackground />
+      {/* <SplineBackground /> */}
       <CursorFollower />
       
       {/* Gradient overlay for better text readability */}

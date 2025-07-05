@@ -16,6 +16,18 @@ import secrets
 from sqlalchemy.orm import Session
 from backend.database.database import SessionLocal, engine, get_db # Import necessary database components
 from backend.models.models import User, Email # Import the User and Email models
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.responses import JSONResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+import logging
+from fastapi import Request as FastAPIRequest
+import requests
+from collections import defaultdict
+from time import time
 
 # Load environment variables
 load_dotenv()
@@ -122,7 +134,43 @@ async def verify_api_key(api_key: str = Security(api_key_header), db: Session = 
         detail="Invalid API key"
     )
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+# --- Account Lockout State ---
+FAILED_ATTEMPTS = defaultdict(lambda: {'count': 0, 'lockout_until': 0})
+LOCKOUT_THRESHOLD = 5
+LOCKOUT_TIME = 15 * 60  # 15 minutes
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests, please try again later."}
+    )
+
+# Security headers middleware
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        response.headers['Permissions-Policy'] = 'geolocation=()'
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none';"
+        return response
+
+app.add_middleware(SecurityHeadersMiddleware)
+# Optionally enforce HTTPS in production
+# app.add_middleware(HTTPSRedirectMiddleware)
+
 @app.post("/api/v1/signup", response_model=Token)
+@limiter.limit("5/minute")
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
@@ -130,42 +178,42 @@ async def signup(user: UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="Email already registered"
         )
-    
     hashed_password = pwd_context.hash(user.password)
     api_key = generate_api_key()
-    
     new_user = User(
         email=user.email,
         hashed_password=hashed_password,
         api_key=api_key
     )
-    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
     access_token = create_access_token(data={"sub": new_user.email})
-    
     return {"access_token": access_token, "token_type": "bearer", "api_key": new_user.api_key}
 
 @app.post("/api/v1/login", response_model=Token)
-async def login(user: UserLogin, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+async def login(user: UserLogin, request: FastAPIRequest, db: Session = Depends(get_db)):
+    ip = get_remote_address(request)
+    state = FAILED_ATTEMPTS[ip]
+    now = time()
+    # Check lockout
+    if state['lockout_until'] > now:
+        logger.warning(f"Locked out login attempt from {ip} for user: {user.email}")
+        raise HTTPException(status_code=403, detail=f"Account locked. Try again later.")
     db_user = db.query(User).filter(User.email == user.email).first()
-    
-    if not db_user:
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect email or password"
-        )
-    
-    if not pwd_context.verify(user.password, db_user.hashed_password):
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect email or password"
-        )
-    
+    if not db_user or not pwd_context.verify(user.password, db_user.hashed_password):
+        logger.warning(f"Failed login attempt for user: {user.email} from {ip}")
+        state['count'] += 1
+        # If failed attempts >= LOCKOUT_THRESHOLD, lock out
+        if state['count'] >= LOCKOUT_THRESHOLD:
+            state['lockout_until'] = now + LOCKOUT_TIME
+            state['count'] = 0
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    # Success: reset state
+    state['count'] = 0
+    state['lockout_until'] = 0
     access_token = create_access_token(data={"sub": db_user.email})
-    
     return {"access_token": access_token, "token_type": "bearer", "api_key": db_user.api_key}
 
 @app.post("/api/v1/check-email", response_model=EmailResponse)

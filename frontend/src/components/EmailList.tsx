@@ -7,6 +7,7 @@ import { useToast } from '../hooks/use-toast';
 import { EmailView } from './EmailView';
 import type { Email } from '../types';
 import { useEmails } from '../hooks/use-emails';
+import { SkeletonEmailCard } from './ui/loading';
 
 export function EmailList() {
   const { token } = useAuth();
@@ -16,11 +17,11 @@ export function EmailList() {
 
   if (isLoading) {
     return (
-      <Card className="w-full">
-        <CardContent className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonEmailCard key={index} />
+        ))}
+      </div>
     );
   }
 

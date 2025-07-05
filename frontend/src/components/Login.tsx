@@ -7,6 +7,7 @@ import { Chrome, Square, Mail, Lock } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
+import { Spinner } from './ui/loading';
 
 export function Login() {
     const navigate = useNavigate();
@@ -35,9 +36,9 @@ export function Login() {
             navigate('/app');
         } catch (error) {
             toast({
-                title: 'Error',
-                description: error instanceof Error ? error.message : 'Login failed',
-                variant: 'destructive',
+                title: 'Login failed',
+                description: error.response?.data?.detail || 'An error occurred during login',
+                variant: 'error',
             });
         } finally {
             setIsLoading(false);
@@ -132,10 +133,17 @@ export function Login() {
 
                             <Button
                                 type="submit"
-                                disabled={isLoading}
                                 className="w-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300"
+                                disabled={isLoading}
                             >
-                                {isLoading ? 'Logging in...' : 'Login'}
+                                {isLoading ? (
+                                    <div className="flex items-center space-x-2">
+                                        <Spinner size="sm" />
+                                        <span>Logging in...</span>
+                                    </div>
+                                ) : (
+                                    'Login'
+                                )}
                             </Button>
 
                             <Button
