@@ -5,6 +5,7 @@ import { AppProvider } from './contexts/AppContext';
 import { Toaster } from './components/ui/toaster';
 import Home from './components/Home';
 import ErrorBoundary from './components/ErrorBoundary';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Suppress React Router v7 deprecation warnings
 const router = {
@@ -35,33 +36,35 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-transparent relative">
-        {/* Animated gradient background will be added globally via CSS */}
-        <Router {...router}>
-          <AuthProvider>
-            <AppProvider>
-              <Suspense fallback={<div className="w-full h-screen flex items-center justify-center text-xl text-white">Chargement...</div>}>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route
-                    path="/app/*"
-                    element={
-                      <PrivateRoute>
-                        <Dashboard />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/" element={<Home />} />
-                </Routes>
-                <Toaster />
-              </Suspense>
-            </AppProvider>
-          </AuthProvider>
-        </Router>
-      </div>
+      <ThemeProvider>
+        <div className="min-h-screen bg-transparent relative">
+          {/* Animated gradient background will be added globally via CSS */}
+          <Router {...router}>
+            <AuthProvider>
+              <AppProvider>
+                <Suspense fallback={<div className="w-full h-screen flex items-center justify-center text-xl text-white">Chargement...</div>}>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                      path="/app/*"
+                      element={
+                        <PrivateRoute>
+                          <Dashboard />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/" element={<Home />} />
+                  </Routes>
+                  <Toaster />
+                </Suspense>
+              </AppProvider>
+            </AuthProvider>
+          </Router>
+        </div>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

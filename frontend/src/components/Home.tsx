@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from './ui/ThemeToggle';
 // Types
 interface MousePosition {
   x: number;
@@ -193,6 +194,7 @@ export default function Home() {
           </div>
           
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <MagneticButton
               onClick={() => navigate('/login')}
               className="bg-transparent border border-purple-500/50 text-white font-bold py-2 px-6 rounded-lg backdrop-blur-sm hover:bg-purple-500/10 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]"

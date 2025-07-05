@@ -171,7 +171,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 
 @app.post("/api/v1/signup", response_model=Token)
 @limiter.limit("5/minute")
-async def signup(user: UserCreate, db: Session = Depends(get_db)):
+async def signup(request: Request, user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(
